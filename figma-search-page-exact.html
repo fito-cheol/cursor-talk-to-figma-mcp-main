@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - Figma Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400&family=Roboto:wght@400&family=SF+Pro+Text:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .search-container {
+            background: #ffffff;
+            width: 375px;
+            height: 812px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Bar - Figma 정확한 위치 */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .time {
+            font-family: 'SF Pro Text', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            color: #000000;
+            letter-spacing: -0.3333333432674408px;
+            line-height: 17.9px;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .cellular-connection {
+            width: 18px;
+            height: 12px;
+            background: #000000;
+            border-radius: 2px;
+        }
+
+        .wifi {
+            width: 21px;
+            height: 15px;
+            background: #000000;
+            border-radius: 2px;
+        }
+
+        .battery {
+            width: 25px;
+            height: 12px;
+            border: 1px solid #000000;
+            border-radius: 2.67px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 18px;
+            height: 7.33px;
+            background: #000000;
+            border-radius: 1.33px;
+        }
+
+        /* Search Title - Figma 정확한 위치와 스타일 */
+        .search-title {
+            position: absolute;
+            top: 76px;
+            left: 16px;
+            font-family: 'Comfortaa', cursive;
+            font-weight: 400;
+            font-size: 36px;
+            color: #000000;
+            letter-spacing: -0.54px;
+            line-height: 40.14px;
+            text-align: left;
+        }
+
+        /* Search Input - Figma 정확한 위치와 스타일 */
+        .search-input-container {
+            position: absolute;
+            top: 148px;
+            left: 16px;
+            width: 343px;
+            height: 52px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 100%;
+            padding: 0 17px;
+            border: 1px solid #000000;
+            border-radius: 0;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            color: rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Figma Status */
+        .figma-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .figma-status.connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .figma-status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .search-container {
+                height: 100vh;
+                border-radius: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="figma-status disconnected" id="figmaStatus">
+        Figma 연결 안됨
+    </div>
+
+    <div class="search-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:27</div>
+            <div class="status-icons">
+                <div class="cellular-connection"></div>
+                <div class="wifi"></div>
+                <div class="battery"></div>
+            </div>
+        </div>
+
+        <!-- Search Title -->
+        <h1 class="search-title">Search</h1>
+
+        <!-- Search Input -->
+        <div class="search-input-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search all photos">
+        </div>
+    </div>
+
+    <script>
+        // WebSocket 연결
+        let ws = null;
+        let isConnected = false;
+        const channelName = 'a2jvt0cr';
+
+        // DOM 요소들
+        const figmaStatus = document.getElementById('figmaStatus');
+        const searchInput = document.getElementById('searchInput');
+
+        // WebSocket 연결 함수
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket('ws://localhost:3055');
+                
+                ws.onopen = function() {
+                    console.log('WebSocket 연결됨');
+                    joinChannel();
+                };
+
+                ws.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                };
+
+                ws.onclose = function() {
+                    console.log('WebSocket 연결 끊어짐');
+                    updateFigmaStatus(false);
+                    setTimeout(connectWebSocket, 3000);
+                };
+
+                ws.onerror = function(error) {
+                    console.error('WebSocket 오류:', error);
+                    updateFigmaStatus(false);
+                };
+            } catch (error) {
+                console.error('WebSocket 연결 실패:', error);
+                updateFigmaStatus(false);
+            }
+        }
+
+        // 채널 참가
+        function joinChannel() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const joinMessage = {
+                    type: 'join',
+                    channel: channelName,
+                    id: generateId()
+                };
+                ws.send(JSON.stringify(joinMessage));
+            }
+        }
+
+        // WebSocket 메시지 처리
+        function handleWebSocketMessage(data) {
+            console.log('받은 메시지:', data);
+            
+            if (data.type === 'system') {
+                if (data.message && typeof data.message === 'object' && data.message.result) {
+                    updateFigmaStatus(true);
+                }
+            }
+        }
+
+        // Figma 상태 업데이트
+        function updateFigmaStatus(connected) {
+            isConnected = connected;
+            if (connected) {
+                figmaStatus.textContent = 'Figma 연결됨';
+                figmaStatus.className = 'figma-status connected';
+            } else {
+                figmaStatus.textContent = 'Figma 연결 안됨';
+                figmaStatus.className = 'figma-status disconnected';
+            }
+        }
+
+        // ID 생성
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // 검색 실행
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                console.log('검색 실행:', query);
+                // 검색 결과 페이지로 이동
+                window.location.href = 'figma-search-results-exact.html?q=' + encodeURIComponent(query);
+            }
+        }
+
+        // Enter 키로 검색
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 페이지 로드 시 WebSocket 연결
+        window.addEventListener('load', function() {
+            connectWebSocket();
+        });
+
+        // 페이지 언로드 시 연결 정리
+        window.addEventListener('beforeunload', function() {
+            if (ws) {
+                ws.close();
+            }
+        });
+    </script>
+</body>
+</html>
