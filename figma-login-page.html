@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Figma Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=SF+Pro+Display:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .login-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 375px;
+            height: 812px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .time {
+            font-family: 'SF Pro Text', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            color: #000000;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .status-icon {
+            width: 18px;
+            height: 12px;
+            background: #000000;
+            border-radius: 2px;
+        }
+
+        .battery {
+            width: 25px;
+            height: 12px;
+            border: 1px solid #000000;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .battery::after {
+            content: '';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            width: 18px;
+            height: 7px;
+            background: #000000;
+            border-radius: 1px;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            width: 12px;
+            height: 11px;
+            background: rgba(0, 0, 0, 0.8);
+            clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 120px 20px 40px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-family: 'Comfortaa', cursive;
+            font-weight: 400;
+            font-size: 36px;
+            color: #000000;
+            margin-bottom: 40px;
+            letter-spacing: -0.54px;
+            line-height: 40px;
+        }
+
+        .form-container {
+            margin-top: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000000;
+            font-weight: 400;
+            font-size: 16px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'SF Pro Display', sans-serif;
+            background: #ffffff;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .form-group input::placeholder {
+            color: #8E8E93;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: #0056CC;
+        }
+
+        .login-button:active {
+            background: #004499;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #007AFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 30px;
+            color: #8E8E93;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #007AFF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Figma Status */
+        .figma-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .figma-status.connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .figma-status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Error/Success Messages */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message {
+            background: #FFE5E5;
+            color: #D70015;
+            border: 1px solid #FFCCCC;
+        }
+
+        .success-message {
+            background: #E5F9E5;
+            color: #007A00;
+            border: 1px solid #CCFFCC;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                height: 100vh;
+                border-radius: 0;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="figma-status disconnected" id="figmaStatus">
+        Figma 연결 안됨
+    </div>
+
+    <div class="login-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:27</div>
+            <div class="status-icons">
+                <div class="status-icon"></div>
+                <div class="status-icon"></div>
+                <div class="battery"></div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button" onclick="goBack()"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1 class="login-title">Log in</h1>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="loginForm" class="form-container">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="login-button" id="loginBtn">
+                    Log in
+                </button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" onclick="forgotPassword()">Forgot password?</a>
+            </div>
+
+            <div class="signup-link">
+                Don't have an account? <a href="#" onclick="showSignup()">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket 연결
+        let ws = null;
+        let isConnected = false;
+        const channelName = 'a2jvt0cr';
+
+        // DOM 요소들
+        const figmaStatus = document.getElementById('figmaStatus');
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // WebSocket 연결 함수
+        function connectWebSocket() {
+            try {
+                ws = new WebSocket('ws://localhost:3055');
+                
+                ws.onopen = function() {
+                    console.log('WebSocket 연결됨');
+                    joinChannel();
+                };
+
+                ws.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                };
+
+                ws.onclose = function() {
+                    console.log('WebSocket 연결 끊어짐');
+                    updateFigmaStatus(false);
+                    // 재연결 시도
+                    setTimeout(connectWebSocket, 3000);
+                };
+
+                ws.onerror = function(error) {
+                    console.error('WebSocket 오류:', error);
+                    updateFigmaStatus(false);
+                };
+            } catch (error) {
+                console.error('WebSocket 연결 실패:', error);
+                updateFigmaStatus(false);
+            }
+        }
+
+        // 채널 참가
+        function joinChannel() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const joinMessage = {
+                    type: 'join',
+                    channel: channelName,
+                    id: generateId()
+                };
+                ws.send(JSON.stringify(joinMessage));
+            }
+        }
+
+        // WebSocket 메시지 처리
+        function handleWebSocketMessage(data) {
+            console.log('받은 메시지:', data);
+            
+            if (data.type === 'system') {
+                if (data.message && typeof data.message === 'object' && data.message.result) {
+                    updateFigmaStatus(true);
+                    showSuccess('Figma MCP 서버에 연결되었습니다!');
+                }
+            }
+        }
+
+        // Figma 상태 업데이트
+        function updateFigmaStatus(connected) {
+            isConnected = connected;
+            if (connected) {
+                figmaStatus.textContent = 'Figma 연결됨';
+                figmaStatus.className = 'figma-status connected';
+            } else {
+                figmaStatus.textContent = 'Figma 연결 안됨';
+                figmaStatus.className = 'figma-status disconnected';
+            }
+        }
+
+        // ID 생성
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // 뒤로가기
+        function goBack() {
+            showSuccess('뒤로가기 기능은 개발 중입니다.');
+        }
+
+        // 비밀번호 찾기
+        function forgotPassword() {
+            showSuccess('비밀번호 찾기 기능은 개발 중입니다.');
+        }
+
+        // 회원가입 표시
+        function showSignup() {
+            showSuccess('회원가입 기능은 개발 중입니다.');
+        }
+
+        // 로그인 폼 제출
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (email && password) {
+                showSuccess('로그인 성공! Figma 디자인 기반 페이지입니다.');
+                
+                // Figma 문서 정보 가져오기 시도
+                if (isConnected) {
+                    getFigmaDocumentInfo();
+                }
+            } else {
+                showError('이메일과 비밀번호를 입력해주세요.');
+            }
+        });
+
+        // 에러 메시지 표시
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // 성공 메시지 표시
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Figma 문서 정보 가져오기
+        function getFigmaDocumentInfo() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const message = {
+                    type: 'message',
+                    channel: channelName,
+                    message: {
+                        command: 'get_document_info',
+                        params: {}
+                    }
+                };
+                ws.send(JSON.stringify(message));
+            }
+        }
+
+        // 페이지 로드 시 WebSocket 연결
+        window.addEventListener('load', function() {
+            connectWebSocket();
+        });
+
+        // 페이지 언로드 시 연결 정리
+        window.addEventListener('beforeunload', function() {
+            if (ws) {
+                ws.close();
+            }
+        });
+    </script>
+</body>
+</html>
