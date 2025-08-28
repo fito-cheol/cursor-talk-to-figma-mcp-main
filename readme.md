@@ -5,3 +5,7 @@
 
 ### figma 참조
 - https://www.figma.com/design/vkOl2Vy009OxWVeo7QQdvd/Cursor-MCP-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9A%A9?node-id=0-1&t=dDRfBIovghMqzMOT-1
+
+
+### 사용법
+ ```cd src && bun socket```
