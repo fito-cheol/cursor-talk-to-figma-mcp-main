@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>휴대폰 본인인증 - 노란우산</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Main container - exact dimensions from Figma */
+        .phone-verification {
+            width: 375px;
+            height: 1100px;
+            background-color: #ffffff;
+            position: relative;
+            font-family: 'Pretendard', sans-serif;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Status Bar - exact dimensions from Figma */
+        .status-bar {
+            height: 48px;
+            background-color: #ffffff;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .time {
+            font-size: 14px;
+            font-weight: 800;
+            color: #30323b;
+            line-height: 20px;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cellular,
+        .wifi,
+        .battery {
+            width: 20px;
+            height: 20px;
+            background-color: #30323b;
+            border-radius: 2px;
+        }
+
+        /* Top Navigation - exact dimensions from Figma */
+        .top-navigation {
+            height: 56px;
+            background-color: #ffffff;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #101116;
+            line-height: 26px;
+            margin: 0;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-icon,
+        .close-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #101116;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Content - exact padding from Figma */
+        .content {
+            padding: 0 24px;
+            height: calc(100vh - 104px - 90px);
+            overflow-y: auto;
+            padding-bottom: 100px;
+        }
+
+        /* Title Section - exact spacing from Figma */
+        .title-section {
+            margin-bottom: 32px;
+            padding-top: 24px;
+        }
+
+        .main-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #101116;
+            line-height: 32px;
+            margin: 0;
+        }
+
+        /* Form Section - exact spacing from Figma */
+        .form-section .form-group {
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #101116;
+            line-height: 22px;
+            margin-bottom: 16px;
+        }
+
+        /* Input Field - exact dimensions from Figma */
+        .input-field input {
+            width: 100%;
+            height: 56px;
+            border: 1px solid #c5c8d3;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 22px;
+            background-color: #ffffff;
+        }
+
+        .input-field input::placeholder {
+            color: #737684;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #2873e3;
+        }
+
+        /* Resident Number Field - exact layout from Figma */
+        .resident-number-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .birth-input,
+        .last-digits {
+            flex: 1;
+            width: 100%;
+            height: 56px;
+            border: 1px solid #c5c8d3;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 22px;
+            background-color: #ffffff;
+        }
+
+        .birth-input::placeholder,
+        .last-digits::placeholder {
+            color: #737684;
+        }
+
+        .separator {
+            font-size: 16px;
+            font-weight: 400;
+            color: #101116;
+            line-height: 22px;
+        }
+
+        /* Carrier Dropdown - exact dimensions from Figma */
+        .carrier-dropdown {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .carrier-dropdown select {
+            width: 100%;
+            height: 56px;
+            border: 1px solid #c5c8d3;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 22px;
+            background-color: #ffffff;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .carrier-dropdown select:focus {
+            outline: none;
+            border-color: #2873e3;
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            background-color: #737684;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            pointer-events: none;
+        }
+
+        /* Agreements Section - exact dimensions and styling from Figma */
+        .agreements-section {
+            background-color: #ffffff;
+            border: 1px solid #d3d6de;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .agreement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .agreement-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .agreement-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            accent-color: #2873e3;
+            cursor: pointer;
+        }
+
+        .agreement-item label {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 400;
+            color: #454855;
+            line-height: 20px;
+            cursor: pointer;
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-weight: 400;
+            color: #737684;
+            line-height: 18px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .view-btn:hover {
+            color: #2873e3;
+        }
+
+        /* Remember Section - exact dimensions from Figma */
+        .remember-section {
+            margin-bottom: 24px;
+        }
+
+        .remember-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .remember-header input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            accent-color: #2873e3;
+            cursor: pointer;
+        }
+
+        .remember-header label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #101116;
+            line-height: 22px;
+            cursor: pointer;
+        }
+
+        .required {
+            margin-left: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2873e3;
+            line-height: 22px;
+        }
+
+        .required::before {
+            content: '';
+            display: inline-block;
+            width: 1px;
+            height: 12px;
+            background-color: #101116;
+            margin-right: 8px;
+        }
+
+        .remember-description {
+            margin: 0 0 0 36px;
+            font-size: 14px;
+            font-weight: 400;
+            color: #454855;
+            line-height: 20px;
+        }
+
+        /* Verify Button - exact dimensions from Figma */
+        .verify-button {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 22px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #d3d6de;
+            color: #737684;
+        }
+
+        .verify-button:hover {
+            background-color: #c5c8d3;
+        }
+
+        .verify-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Bottom Navigation - exact dimensions from Figma */
+        .bottom-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            height: 90px;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .prev-button,
+        .next-button {
+            flex: 1;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 22px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .prev-button {
+            background-color: #ffffff;
+            border: 1px solid #737684;
+            color: #101116;
+        }
+
+        .prev-button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .next-button {
+            background-color: #d3d6de;
+            color: #737684;
+        }
+
+        .next-button:hover {
+            background-color: #c5c8d3;
+        }
+
+        /* Focus states and accessibility */
+        *:focus {
+            outline: 2px solid #2873e3;
+            outline-offset: 2px;
+        }
+
+        /* Custom checkbox styling */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #737684;
+            border-radius: 6px;
+            background-color: #ffffff;
+            cursor: pointer;
+            position: relative;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #2873e3;
+            border-color: #2873e3;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 375px) {
+            .phone-verification {
+                width: 100%;
+                border-radius: 0;
+            }
+
+            .bottom-navigation {
+                width: 100%;
+            }
+        }
+
+        /* Scrollbar styling */
+        .content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #c5c8d3;
+            border-radius: 2px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #737684;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-verification">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="status-icons">
+                <div class="cellular"></div>
+                <div class="wifi"></div>
+                <div class="battery"></div>
+            </div>
+        </div>
+
+        <!-- Top Navigation -->
+        <div class="top-navigation">
+            <h1 class="nav-title">노란우산 가입</h1>
+            <div class="nav-icons">
+                <div class="chat-icon"></div>
+                <div class="close-icon"></div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Title -->
+            <div class="title-section">
+                <h2 class="main-title">본인 인증</h2>
+            </div>
+
+            <!-- Form -->
+            <div class="form-section">
+                <!-- 대표자 이름 -->
+                <div class="form-group">
+                    <label class="form-label">대표자 이름</label>
+                    <div class="input-field">
+                        <input
+                            type="text"
+                            placeholder="이름을 입력해 주세요"
+                            id="name"
+                        />
+                    </div>
+                </div>
+
+                <!-- 대표자 주민등록번호 -->
+                <div class="form-group">
+                    <label class="form-label">대표자 주민등록번호</label>
+                    <div class="resident-number-field">
+                        <input
+                            type="text"
+                            placeholder="생년월일"
+                            class="birth-input"
+                            id="birthDate"
+                        />
+                        <span class="separator">-</span>
+                        <input
+                            type="password"
+                            placeholder="뒷자리 7자리"
+                            class="last-digits"
+                            id="lastDigits"
+                        />
+                    </div>
+                </div>
+
+                <!-- 대표자 휴대폰번호 -->
+                <div class="form-group">
+                    <label class="form-label">대표자 휴대폰번호</label>
+                    
+                    <!-- 통신사 선택 -->
+                    <div class="carrier-dropdown">
+                        <select id="carrier">
+                            <option value="">통신사</option>
+                            <option value="skt">SKT</option>
+                            <option value="kt">KT</option>
+                            <option value="lg">LG U+</option>
+                        </select>
+                        <div class="dropdown-arrow"></div>
+                    </div>
+
+                    <!-- 휴대폰 번호 입력 -->
+                    <div class="input-field">
+                        <input
+                            type="tel"
+                            placeholder="숫자만 입력해 주세요"
+                            id="phoneNumber"
+                        />
+                    </div>
+
+                    <!-- 약관 동의 -->
+                    <div class="agreements-section">
+                        <div class="agreement-item">
+                            <input
+                                type="checkbox"
+                                id="personalInfo"
+                            />
+                            <label for="personalInfo">개인정보이용동의</label>
+                            <button class="view-btn">보기</button>
+                        </div>
+                        
+                        <div class="agreement-item">
+                            <input
+                                type="checkbox"
+                                id="uniqueInfo"
+                            />
+                            <label for="uniqueInfo">고유식별정보처리동의</label>
+                            <button class="view-btn">보기</button>
+                        </div>
+                        
+                        <div class="agreement-item">
+                            <input
+                                type="checkbox"
+                                id="serviceTerms"
+                            />
+                            <label for="serviceTerms">서비스이용약관동의</label>
+                            <button class="view-btn">보기</button>
+                        </div>
+                        
+                        <div class="agreement-item">
+                            <input
+                                type="checkbox"
+                                id="carrierTerms"
+                            />
+                            <label for="carrierTerms">통신사이용약관동의</label>
+                            <button class="view-btn">보기</button>
+                        </div>
+                    </div>
+
+                    <!-- 내 정보 기억하기 -->
+                    <div class="remember-section">
+                        <div class="remember-header">
+                            <input
+                                type="checkbox"
+                                id="rememberInfo"
+                            />
+                            <label for="rememberInfo">
+                                내 정보 기억하기
+                                <span class="required">필수</span>
+                            </label>
+                        </div>
+                        <p class="remember-description">
+                            사업자 등록 조회 시 간편하게 본인인증을 할 수 있어요. 정보는 안전하게 저장되니 안심하세요.
+                        </p>
+                    </div>
+
+                    <!-- 인증 요청 버튼 -->
+                    <button class="verify-button" onclick="handleSubmit()">
+                        동의하고 인증 요청하기
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-navigation">
+            <button class="prev-button" onclick="handlePrev()">이전</button>
+            <button class="next-button" onclick="handleNext()">다음</button>
+        </div>
+    </div>
+
+    <script>
+        // 폼 데이터 객체
+        const formData = {
+            name: '',
+            birthDate: '',
+            lastDigits: '',
+            phoneNumber: '',
+            carrier: '',
+            agreements: {
+                personalInfo: false,
+                uniqueInfo: false,
+                serviceTerms: false,
+                carrierTerms: false
+            },
+            rememberInfo: false
+        };
+
+        // 입력 필드 이벤트 리스너
+        document.getElementById('name').addEventListener('input', (e) => {
+            formData.name = e.target.value;
+        });
+
+        document.getElementById('birthDate').addEventListener('input', (e) => {
+            formData.birthDate = e.target.value;
+        });
+
+        document.getElementById('lastDigits').addEventListener('input', (e) => {
+            formData.lastDigits = e.target.value;
+        });
+
+        document.getElementById('phoneNumber').addEventListener('input', (e) => {
+            formData.phoneNumber = e.target.value;
+        });
+
+        document.getElementById('carrier').addEventListener('change', (e) => {
+            formData.carrier = e.target.value;
+        });
+
+        // 체크박스 이벤트 리스너
+        document.getElementById('personalInfo').addEventListener('change', (e) => {
+            formData.agreements.personalInfo = e.target.checked;
+        });
+
+        document.getElementById('uniqueInfo').addEventListener('change', (e) => {
+            formData.agreements.uniqueInfo = e.target.checked;
+        });
+
+        document.getElementById('serviceTerms').addEventListener('change', (e) => {
+            formData.agreements.serviceTerms = e.target.checked;
+        });
+
+        document.getElementById('carrierTerms').addEventListener('change', (e) => {
+            formData.agreements.carrierTerms = e.target.checked;
+        });
+
+        document.getElementById('rememberInfo').addEventListener('change', (e) => {
+            formData.rememberInfo = e.target.checked;
+        });
+
+        // 인증 요청 함수
+        function handleSubmit() {
+            console.log('인증 요청:', formData);
+            alert('인증 요청이 완료되었습니다.');
+        }
+
+        // 이전 버튼 함수
+        function handlePrev() {
+            console.log('이전 페이지로 이동');
+            alert('이전 페이지로 이동합니다.');
+        }
+
+        // 다음 버튼 함수
+        function handleNext() {
+            console.log('다음 페이지로 이동');
+            alert('다음 페이지로 이동합니다.');
+        }
+
+        // 보기 버튼 이벤트 리스너
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const agreementType = e.target.previousElementSibling.textContent;
+                alert(`${agreementType} 약관을 확인합니다.`);
+            });
+        });
+
+        // 닫기 버튼 이벤트 리스너
+        document.querySelector('.close-icon').addEventListener('click', () => {
+            alert('페이지를 닫습니다.');
+        });
+
+        // 채팅 버튼 이벤트 리스너
+        document.querySelector('.chat-icon').addEventListener('click', () => {
+            alert('채팅을 시작합니다.');
+        });
+    </script>
+</body>
+</html>

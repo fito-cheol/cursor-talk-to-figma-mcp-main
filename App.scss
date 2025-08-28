@@ -1,0 +1,38 @@
+.App {
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+}
+
+// Google Fonts import
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+
+// Global styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  background-color: #ffffff;
+  color: #101116;
+  line-height: 1.5;
+}
+
+// Reset button styles
+button {
+  font-family: inherit;
+}
+
+// Focus styles for accessibility
+*:focus {
+  outline: 2px solid #2873e3;
+  outline-offset: 2px;
+}
+
+// Remove focus outline for mouse users
+*:focus:not(:focus-visible) {
+  outline: none;
+}

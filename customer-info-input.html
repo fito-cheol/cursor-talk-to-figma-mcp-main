@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고객 정보 입력</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #ffffff;
+            color: #101116;
+        }
+
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 48px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .time {
+            font-weight: 800;
+            font-size: 14px;
+            color: #30323b;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            height: 56px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .nav-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: #101116;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            padding: 16px 24px;
+        }
+
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .step-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #2873e3;
+            background-color: #ffffff;
+        }
+
+        .step-active {
+            background-color: #2873e3;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .step-inactive {
+            background-color: #e1e3ea;
+            color: #5a5e6c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .step-label {
+            background-color: #2873e3;
+            color: #ffffff;
+            padding: 0 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Title */
+        .title {
+            font-weight: 700;
+            font-size: 22px;
+            line-height: 32px;
+            margin-bottom: 32px;
+        }
+
+        /* Basic Info Section */
+        .section {
+            padding: 0 24px;
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #101116;
+        }
+
+        .more-btn {
+            font-weight: 600;
+            font-size: 13px;
+            color: #454855;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Info Table */
+        .info-table {
+            background-color: #f3f4f7;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 16px;
+            border-bottom: 1px solid #e1e3ea;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: #5a5e6c;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-size: 14px;
+            color: #101116;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #f3f4f7;
+        }
+
+        /* Address Section */
+        .address-section {
+            margin-bottom: 40px;
+        }
+
+        .address-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .address-search-btn {
+            background-color: #e4f2ff;
+            color: #235fd2;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Form Fields */
+        .form-field {
+            margin-bottom: 24px;
+        }
+
+        .field-title {
+            font-weight: 500;
+            font-size: 14px;
+            color: #454855;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .required {
+            color: #2873e3;
+            font-weight: 500;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #c5c8d3;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            background-color: #ffffff;
+        }
+
+        .field-input::placeholder {
+            color: #737684;
+        }
+
+        .email-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .email-input {
+            flex: 1;
+        }
+
+        .email-separator {
+            color: #101116;
+            font-size: 16px;
+        }
+
+        .email-select {
+            flex: 1;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #737684;
+        }
+
+        .dropdown-icon {
+            width: 18px;
+            height: 18px;
+            background-color: #ffffff;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background-color: #e1e3ea;
+            opacity: 0.7;
+            margin: 32px 0;
+        }
+
+        /* ID Card Section */
+        .id-card-section {
+            margin-bottom: 40px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-button {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #737684;
+            background-color: #ffffff;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-button.checked {
+            background-color: #2873e3;
+            border-color: #2873e3;
+        }
+
+        .radio-button.checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+
+        .radio-label {
+            font-size: 16px;
+            color: #101116;
+        }
+
+        /* Agreement Section */
+        .agreement-section {
+            margin-bottom: 40px;
+        }
+
+        .agreement-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .agreement-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #101116;
+        }
+
+        .agreement-required {
+            color: #2873e3;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .agreement-box {
+            border: 1px solid #d3d6de;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .agreement-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .agreement-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #737684;
+            border-radius: 6px;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+
+        .checkbox.checked {
+            background-color: #2873e3;
+            border-color: #2873e3;
+        }
+
+        .checkbox-label {
+            font-weight: 700;
+            font-size: 16px;
+            color: #101116;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .required-badge {
+            color: #2873e3;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .arrow-up {
+            width: 18px;
+            height: 18px;
+            background-color: #ffffff;
+        }
+
+        .agreement-items {
+            border-top: 1px solid #e1e3ea;
+            padding-top: 16px;
+        }
+
+        .agreement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .agreement-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #737684;
+            border-radius: 6px;
+            background-color: #ffffff;
+            cursor: pointer;
+        }
+
+        .item-label {
+            font-size: 14px;
+            color: #454855;
+        }
+
+        /* Notice */
+        .notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 64px;
+        }
+
+        .notice-dot {
+            width: 2px;
+            height: 2px;
+            background-color: #454855;
+            border-radius: 50%;
+            margin-top: 9px;
+            flex-shrink: 0;
+        }
+
+        .notice-text {
+            font-size: 13px;
+            color: #454855;
+            line-height: 20px;
+        }
+
+        /* Bottom Buttons */
+        .bottom-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            background-color: #ffffff;
+            padding: 16px 24px;
+            border-top: 1px solid #e1e3ea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #101116;
+            border: 1px solid #737684;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: #d3d6de;
+            color: #737684;
+            flex: 2;
+        }
+
+        .btn-primary.active {
+            background-color: #2873e3;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="status-icons">
+                <div class="cellular"></div>
+                <div class="wifi"></div>
+                <div class="battery"></div>
+            </div>
+        </div>
+
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="nav-title">노란우산 가입</div>
+            <div class="nav-icons">
+                <div class="chat-icon"></div>
+                <div class="close-icon"></div>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="step-circle"></div>
+                <div class="step-label">2 사업장정보</div>
+                <div class="step-inactive">3</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <div class="section">
+            <div class="title">사업장 및 고객 정보를<br>입력해 주세요</div>
+        </div>
+
+        <!-- Basic Info Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">기본 정보</div>
+                <button class="more-btn">더보기</button>
+            </div>
+
+            <div class="info-table">
+                <div class="info-row">
+                    <div class="info-label">이름</div>
+                    <div class="info-value">
+                        기평생
+                        <div class="copy-icon"></div>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">휴대폰번호</div>
+                    <div class="info-value">010-2345-6789</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">업체명</div>
+                    <div class="info-value">기은상사</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">사업자등록번호</div>
+                    <div class="info-value">123-45-67890</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Section -->
+        <div class="section address-section">
+            <div class="address-title">자택 주소</div>
+            <button class="address-search-btn">
+                <div class="search-icon"></div>
+                주소 검색
+                <div class="arrow-icon"></div>
+            </button>
+        </div>
+
+        <!-- Email Field -->
+        <div class="section">
+            <div class="form-field">
+                <div class="field-title">
+                    이메일
+                    <span class="required">선택</span>
+                </div>
+                <div class="field-input email-field">
+                    <input type="text" class="email-input" placeholder="이메일">
+                    <span class="email-separator">@</span>
+                    <select class="email-select">
+                        <option>선택</option>
+                    </select>
+                    <div class="dropdown-icon"></div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <div class="field-title">
+                    사업장 전화번호
+                    <span class="required">선택</span>
+                </div>
+                <input type="tel" class="field-input" placeholder="입력해주세요.">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- ID Card Section -->
+        <div class="section id-card-section">
+            <div class="section-title">신분증 정보</div>
+            
+            <div class="radio-group">
+                <div class="radio-item">
+                    <div class="radio-button checked"></div>
+                    <div class="radio-label">주민등록증</div>
+                </div>
+                <div class="radio-item">
+                    <div class="radio-button"></div>
+                    <div class="radio-label">운전면허증</div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <div class="field-title">발급일</div>
+                <input type="text" class="field-input" placeholder="숫자만 입력 (예: 20240101)">
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Agreement Section -->
+        <div class="section agreement-section">
+            <div class="agreement-header">
+                <div class="agreement-title">중요정보 수신 동의</div>
+                <div class="agreement-required">선택</div>
+            </div>
+
+            <div class="agreement-box">
+                <div class="agreement-main">
+                    <div class="agreement-checkbox">
+                        <div class="checkbox checked"></div>
+                        <div class="checkbox-label">
+                            상품안내수단 전체
+                            <div class="required-badge">필수</div>
+                        </div>
+                    </div>
+                    <div class="arrow-up"></div>
+                </div>
+
+                <div class="agreement-items">
+                    <div class="agreement-item">
+                        <div class="item-checkbox"></div>
+                        <div class="item-label">카카오/문자 (SMS)</div>
+                    </div>
+                    <div class="agreement-item">
+                        <div class="item-checkbox"></div>
+                        <div class="item-label">이메일</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notice">
+                <div class="notice-dot"></div>
+                <div class="notice-text">납입내역 등의 내용 수신을 원하는 경우, 수신 방법을 '카카오/문자'로 선택해 주세요.</div>
+            </div>
+        </div>
+
+        <!-- Bottom Buttons -->
+        <div class="bottom-buttons">
+            <div class="button-group">
+                <button class="btn btn-secondary">이전</button>
+                <button class="btn btn-primary">다음</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
